@@ -652,7 +652,6 @@ static void ksb_usb_disconnect(struct usb_interface *ifc)
 	spin_unlock_irqrestore(&ksb->lock, flags);
 
 	misc_deregister(ksb->fs_dev);
-	ifc->needs_remote_wakeup = 0;
 	usb_put_dev(ksb->udev);
 	ksb->ifc = NULL;
 	usb_set_intfdata(ifc, NULL);
