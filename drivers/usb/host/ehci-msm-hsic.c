@@ -735,16 +735,11 @@ static int msm_hsic_resume(struct msm_hsic_hcd *mehci)
 	unsigned temp;
 	int min_vol, max_vol;
 	unsigned long flags;
-	struct msm_hsic_host_platform_data *pdata = mehci->dev->platform_data;
 
 	if (!atomic_read(&mehci->in_lpm)) {
 		dev_dbg(mehci->dev, "%s called in !in_lpm\n", __func__);
 		return 0;
 	}
-
-	if (pdata && pdata->standalone_latency)
-		pm_qos_update_request(&mehci->pm_qos_req_dma,
-			pdata->standalone_latency + 1);
 
 	spin_lock_irqsave(&mehci->wakeup_lock, flags);
 	if (mehci->wakeup_irq_enabled) {
