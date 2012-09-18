@@ -1366,6 +1366,9 @@ int usb_suspend(struct device *dev, pm_message_t msg)
 		}
 	}
 
+	if (udev->bus->skip_resume && udev->state == USB_STATE_SUSPENDED)
+		return 0;
+
 	unbind_no_pm_drivers_interfaces(udev);
 
 	/* From now on we are sure all drivers support suspend/resume
