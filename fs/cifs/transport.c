@@ -338,15 +338,16 @@ static int allocate_mid(struct cifs_ses *ses, struct smb_hdr *in_buf,
 static int
 wait_for_response(struct TCP_Server_Info *server, struct mid_q_entry *midQ)
 {
-	int error;
+        int error;
 
-	error = wait_event_freezekillable(server->response_q,
-				    midQ->mid_state != MID_REQUEST_SUBMITTED);
-	if (error < 0)
-		return -ERESTARTSYS;
+        error = wait_event_freezekillable(server->response_q,
+                                 midQ->mid_state != MID_REQUEST_SUBMITTED);
+        if (error < 0)
+                return -ERESTARTSYS;
 
-	return 0;
+        return 0;
 }
+
 
 static int
 cifs_setup_async_request(struct TCP_Server_Info *server, struct kvec *iov,
