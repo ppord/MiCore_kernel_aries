@@ -430,5 +430,5 @@ static inline void msm_hw_bam_disable(bool bam_disable)
 int msm_ep_config(struct usb_ep *ep);
 int msm_ep_unconfig(struct usb_ep *ep);
 int msm_data_fifo_config(struct usb_ep *ep, u32 addr, u32 size);
-
+#endif
 #endif
