@@ -120,8 +120,6 @@ struct cpufreq_interactive_inputopen {
 static struct cpufreq_interactive_inputopen inputopen;
 static struct workqueue_struct *inputopen_wq;
 
-/* Non-zero means indefinite speed boost active */
-static int boost_val = false;
 /* Duration of a boot pulse in usecs */
 static int boostpulse_duration_val = DEFAULT_MIN_SAMPLE_TIME;
 /* End time of boost pulse in ktime converted to usecs */
@@ -431,7 +429,7 @@ static void cpufreq_interactive_timer(unsigned long data)
 	loadadjfreq = (unsigned int)cputime_speedadj * 100;
 	cpu_load = loadadjfreq / pcpu->target_freq;
 	pcpu->prev_load = cpu_load;
-	boosted = boost_val || now < boostpulse_endtime;
+	boosted = now < boostpulse_endtime;
 
 	if (cpu_load >= go_hispeed_load) {
 		if (pcpu->target_freq < hispeed_freq) {
@@ -764,7 +762,7 @@ static struct notifier_block cpufreq_notifier_block = {
 };
 
 /*
-* Pulsed boost on input event raises CPUs to hispeed_freq and lets
+* Pulsed boost on input event raises CPUs to input_boost_freq and lets
 * usual algorithm of min_sample_time decide when to allow speed
 * to drop.
 */
@@ -1167,36 +1165,6 @@ static ssize_t store_input_boost(struct kobject *kobj, struct attribute *attr,
 
 define_one_global_rw(input_boost);
 
-static ssize_t show_boost(struct kobject *kobj, struct attribute *attr,
-			  char *buf)
-{
-	return sprintf(buf, "%d\n", boost_val);
-}
-
-static ssize_t store_boost(struct kobject *kobj, struct attribute *attr,
-			   const char *buf, size_t count)
-{
-	int ret;
-	unsigned long val;
-
-	ret = kstrtoul(buf, 0, &val);
-	if (ret < 0)
-		return ret;
-
-	boost_val = val;
-
-	if (boost_val) {
-		trace_cpufreq_interactive_boost("on");
-		cpufreq_interactive_boost();
-	} else {
-		trace_cpufreq_interactive_unboost("off");
-	}
-
-	return count;
-}
-
-define_one_global_rw(boost);
-
 static ssize_t store_boostpulse(struct kobject *kobj, struct attribute *attr,
 				const char *buf, size_t count)
 {
@@ -1341,7 +1309,6 @@ static struct attribute *interactive_attributes[] = {
 	&input_boost_freq_attr.attr,
 	&timer_slack.attr,
 	&input_boost.attr,
-	&boost.attr,
 	&boostpulse.attr,
 	&boostpulse_duration.attr,
 	&io_is_busy_attr.attr,
