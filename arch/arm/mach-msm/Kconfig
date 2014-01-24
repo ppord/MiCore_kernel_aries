@@ -1605,6 +1605,12 @@ config INTELLI_PLUG
         help
          Generic Intelli-plug cpu hotplug driver for ARM SOCs
 
+config CPU_OVERCLOCK
+        bool "Enable CPU Overclocking option"
+        default n
+        help
+         Krait overclock support
+
 config CPU_VOLTAGE_TABLE
         bool "Enable CPU Voltage Table via sysfs for adjustements"
         default n

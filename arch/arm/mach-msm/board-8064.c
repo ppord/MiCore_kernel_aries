@@ -2936,11 +2936,19 @@ static struct msm_thermal_data msm_thermal_pdata = {
 	.sensor_id = 7,
 	.poll_ms = 1000,
 #ifdef CONFIG_INTELLI_THERMAL
+#ifdef CONFIG_CPU_OVERCLOCK
+        .limit_temp_degC = 70,
+#else
         .limit_temp_degC = 60,
+#endif
         .temp_hysteresis_degC = 10,
         .freq_step = 2,
         .freq_control_mask = 0xf,
+#ifdef CONFIG_CPU_OVERCLOCK
+        .core_limit_temp_degC = 90,
+#else
         .core_limit_temp_degC = 80,
+#endif
         .core_temp_hysteresis_degC = 10,
         .core_control_mask = 0xe,
 #else
