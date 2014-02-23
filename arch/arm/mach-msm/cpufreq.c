@@ -347,44 +347,6 @@ static int __cpuinit msm_cpufreq_init(struct cpufreq_policy *policy)
 extern bool lmf_screen_state;
 #endif
 
-static void msm_cpu_early_suspend(struct early_suspend *h)
-{
-
-#ifdef CONFIG_CPUFREQ_LIMIT_MAX_FREQ
-        int cpu = 0;
-
-        for_each_possible_cpu(cpu) {
-
-                mutex_lock(&per_cpu(cpufreq_suspend, cpu).suspend_mutex);
-                lmf_screen_state = false;
-                mutex_unlock(&per_cpu(cpufreq_suspend, cpu).suspend_mutex);
-        }
-#endif
-
-}
-
-static void msm_cpu_late_resume(struct early_suspend *h)
-{
-
-#ifdef CONFIG_CPUFREQ_LIMIT_MAX_FREQ
-        int cpu = 0;
-
-        for_each_possible_cpu(cpu) {
-
-                mutex_lock(&per_cpu(cpufreq_suspend, cpu).suspend_mutex);
-                lmf_screen_state = true;
-                mutex_unlock(&per_cpu(cpufreq_suspend, cpu).suspend_mutex);
-        }
-#endif
-
-}
-
-static struct early_suspend msm_cpu_early_suspend_handler = {
-        .level = EARLY_SUSPEND_LEVEL_BLANK_SCREEN,
-        .suspend = msm_cpu_early_suspend,
-        .resume = msm_cpu_late_resume,
-};
-
 /*
  * Define suspend/resume for cpufreq_driver. Kernel will call
  * these during suspend/resume with interrupts disabled. This
@@ -429,10 +391,6 @@ static struct cpufreq_driver msm_cpufreq_driver = {
 	.resume		= msm_cpufreq_resume,
 	.name		= "msm",
 	.attr		= msm_freq_attr,
-};
-
-static struct notifier_block msm_cpufreq_pm_notifier = {
-	.notifier_call = msm_cpufreq_pm_event,
 };
 
 static int __init msm_cpufreq_register(void)
