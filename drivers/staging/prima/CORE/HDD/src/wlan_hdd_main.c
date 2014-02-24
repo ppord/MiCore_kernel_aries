@@ -141,7 +141,7 @@ MODULE_PARM_DESC(mac, "WCNSS 3660 mac address");
  */
 #define WLAN_HDD_RESTART_RETRY_DELAY_MS 5000  /* 5 second */
 #define WLAN_HDD_RESTART_RETRY_MAX_CNT  5     /* 5 retries */
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,78))
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,85))
 static struct wake_lock wlan_wake_lock;
 #endif
 /* set when SSR is needed after unload */
@@ -3163,7 +3163,7 @@ void wlan_hdd_enable_deepsleep(v_VOID_t * pVosContext)
 /* wake lock APIs for HDD */
 void hdd_prevent_suspend(void)
 {
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,78))
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,85))
     wake_lock(&wlan_wake_lock);
 #else
     wcnss_prevent_suspend();
@@ -3172,7 +3172,7 @@ void hdd_prevent_suspend(void)
 
 void hdd_allow_suspend(void)
 {
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,78))
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,85))
     wake_unlock(&wlan_wake_lock);
 #else
     wcnss_allow_suspend();
@@ -3181,7 +3181,7 @@ void hdd_allow_suspend(void)
 
 void hdd_allow_suspend_timeout(v_U32_t timeout)
 {
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,78))
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,85))
     wake_lock_timeout(&wlan_wake_lock, timeout);
 #else
     /* Do nothing as there is no API in wcnss for timeout*/
@@ -4017,7 +4017,7 @@ static int hdd_driver_init( void)
 
    ENTER();
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,78))
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,85))
    wake_lock_init(&wlan_wake_lock, WAKE_LOCK_SUSPEND, "wlan");
 #endif
 
@@ -4196,7 +4196,7 @@ static int hdd_driver_init( void)
       vos_mem_exit();
 #endif
 
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,78))
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,85))
       wake_lock_destroy(&wlan_wake_lock);
 #endif
       pr_err("%s: driver load failure\n", WLAN_MODULE_NAME);
@@ -4304,7 +4304,7 @@ static void hdd_driver_exit(void)
 #endif
 
 done:
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,78))
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(3,4,85))
    wake_lock_destroy(&wlan_wake_lock);
 #endif
    pr_info("%s: driver unloaded\n", WLAN_MODULE_NAME);

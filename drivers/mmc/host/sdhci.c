@@ -1258,6 +1258,7 @@ static void sdhci_request(struct mmc_host *mmc, struct mmc_request *mrq)
 
 			/* Restore original mmc_request structure */
 			host->mrq = mrq;
+
 			if (mmc->card) {
 				/* eMMC uses cmd21 but sd and sdio use cmd19 */
 				tuning_opcode =
